@@ -6,8 +6,8 @@ import random
 import os
 import json
 import numpy
-import sys
 from pathlib import Path
+import sys
 
 # set the path where audio is discovered
 filePath = os.path.dirname(__file__)
@@ -17,15 +17,15 @@ audioPath = os.path.join(filePath, 'SONG_ANALYSE')
 files = os.listdir(audioPath)
 # find any random file in folder
 files = [f for f in files if os.path.isfile(os.path.join(audioPath, f))]
-random_file = random.choice(files)
-
+randomFile = random.choice(files)
 
 # combine the file and the path 
-full_path = os.path.join(audioPath, random_file)
-y, sr = librosa.load(full_path)
+fullAudioPath = os.path.join(audioPath, randomFile)
+y, sr = librosa.load(fullAudioPath)
 
 
-tempo, beat_frames = librosa.beat.beat_track(y=y, sr=sr)
+# beats is required, i think to ensure everything isnt stored in tempo and the data is instead split
+tempo, beats = librosa.beat.beat_track(y=y, sr=sr)
 tempo = float(tempo.mean())
 print('BPM: ' + format(tempo))
 
@@ -35,44 +35,74 @@ rmsMin = rms.min()
 rmsMax = rms.max()
 rmsNormalise = (rms - rmsMin) / (rmsMax - rmsMin)    # normalise values so they are useable
 # now have 100s of values per second of music
-
-
 rmsMean = float(rmsNormalise.mean()) # overall loudness of track
 print ('RMS Mean: ' + format(rmsMean))
 # ideally find rms every x seconds
 
 
+# brightness rating of audio track
 specCentroid = librosa.feature.spectral_centroid(y=y, sr=sr)
 specCentroidMean = float(specCentroid.mean())
 print ('Spectral Centroid Mean: ' + format(specCentroidMean))
 # potentially find centroid every x/y sec
 
 
-#numpy.set_printoptions(threshold=sys.maxsize)
-#print (rmsNormalise)
-
-
+# bass strength at loudest of track (found by restricting to low freq)
 onsetEnv = librosa.onset.onset_strength(y=y, sr=sr, fmax = 1000,  n_mels=32)
-
-onsetEnvMean = float(onsetEnv.mean()) # bass strength at loudest of track (found by restricting to low freq)
+onsetEnvMean = float(onsetEnv.mean()) 
 print ('Onset Strength Mean: ' + format(onsetEnvMean))
 
+
+# beat strength
+beatStrengths = onsetEnv[beats]
+beatStrengthMean = float(beatStrengths.mean())
+print ('Beat Strength Mean: ' + format(beatStrengthMean))
+
+
+# rating of noisiness
+zeroCrossingRate = librosa.feature.zero_crossing_rate(y)
+zeroCrossingRateMean = float(zeroCrossingRate.mean()) 
+print ('Zero Crossing Rate: ' + format(zeroCrossingRateMean))
+
+
+# spectral rolloff = where the audio has most of its energy/power (either high / low frequnecy)
+rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr, roll_percent=0.85)
+rolloffMean = rolloff.mean()
+print ('Rolloff Mean: ' + format(rolloffMean))
+
+
+# FROM https://medium.com/@oluyaled/detecting-musical-key-from-audio-using-chroma-feature-in-python-72850c0ae4b1
+# Find musical key
+chroma = librosa.feature.chroma_stft(y=y, sr=sr)
+meanChroma = numpy.mean(chroma, axis=1)
+chromaToKey = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+# Find the key by selecting the maximum chroma feature
+estimatedKeyIndex = numpy.argmax(meanChroma)
+estimatedKey = chromaToKey[estimatedKeyIndex]
+print ('Estimated Key: ' + format(estimatedKey))
 
 
 
 # create json structure for output
 output = [
         {  
-        "Name": random_file,
+        "Name": randomFile,
         "BPM": tempo,
         "RMS Mean": rmsMean,
         "Spectral Centroid Mean": specCentroidMean,
-        "Onset Strength Mean": onsetEnvMean
+        "Onset Strength Mean": onsetEnvMean,
+        "Beat Strength Mean": beatStrengthMean,
+        "Zero Crossing Rate Mean": zeroCrossingRateMean,
+        "Rolloff Mean": rolloffMean,
+        "Estimated Key": estimatedKey
         }
     ]
   
 
 # create the json file 
 outputPath = os.path.join(filePath, 'audioData.json')
-with open(outputPath, "w") as outfile:
-    json.dump(output, outfile, indent = 2)
+with open(outputPath, "w") as outFile:
+    json.dump(output, outFile, indent = 2)
+
+
+#numpy.set_printoptions(threshold=sys.maxsize)

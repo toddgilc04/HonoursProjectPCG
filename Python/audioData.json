@@ -1,9 +1,13 @@
 [
   {
-    "Name": "chinese.wav",
-    "BPM": 129.19921875,
-    "RMS Mean": 0.5138790011405945,
-    "Spectral Centroid Mean": 1992.316503800837,
-    "Onset Strength Mean": 1.1678643226623535
+    "Name": "short-10-228139.wav",
+    "BPM": 60.09265988372093,
+    "RMS Mean": 0.48289453983306885,
+    "Spectral Centroid Mean": 1156.5091373265996,
+    "Onset Strength Mean": 2.2178173065185547,
+    "Beat Strength Mean": 8.686468124389648,
+    "Zero Crossing Rate Mean": 0.03858183794025858,
+    "Rolloff Mean": 2402.238572520759,
+    "Estimated Key": "A"
   }
 ]
