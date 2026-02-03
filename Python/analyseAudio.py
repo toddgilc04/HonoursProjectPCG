@@ -54,7 +54,14 @@ print ('Onset Strength Mean: ' + format(onsetEnvMean))
 
 
 # beat strength
-beatStrengths = onsetEnv[beats]
+onsetEnvHigherCap = librosa.onset.onset_strength(y=y, sr=sr, fmax = 8000,  n_mels=128)
+beats = librosa.util.fix_frames(beats)
+beatStrengths = onsetEnvHigherCap[beats]
+beatStrengthsNormalise = (beatStrengths - numpy.min(beatStrengths)) / (numpy.max(beatStrengths) - numpy.min(beatStrengths))
+# this gives the beat strengths from 0to 1 per onset beat, next normalise it so it can be applied to spline points in ue5
+
+
+beatStrengthsList = beatStrengthsNormalise.tolist()
 beatStrengthMean = float(beatStrengths.mean())
 print ('Beat Strength Mean: ' + format(beatStrengthMean))
 
@@ -81,8 +88,6 @@ estimatedKeyIndex = numpy.argmax(meanChroma)
 estimatedKey = chromaToKey[estimatedKeyIndex]
 print ('Estimated Key: ' + format(estimatedKey))
 
-
-
 # create json structure for output
 output = [
         {  
@@ -94,7 +99,8 @@ output = [
         "Beat Strength Mean": beatStrengthMean,
         "Zero Crossing Rate Mean": zeroCrossingRateMean,
         "Rolloff Mean": rolloffMean,
-        "Estimated Key": estimatedKey
+        "Estimated Key": estimatedKey,
+        "Beat Strengths Array": beatStrengthsList
         }
     ]
   
