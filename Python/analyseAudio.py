@@ -7,7 +7,32 @@ import os
 import json
 import numpy
 from pathlib import Path
-import sys
+
+#clamp created as values have to stay within reasonable bounds
+def clamp(n, min, max):
+    if n < min:
+        return min
+    elif n > max:
+        return max
+    else:
+        return n
+    
+BPMLower = 37
+BPMHigher = 185
+rmsLower = .103
+rmsHigher = .763
+specCentroidLower = 548.25
+specCentroidHigher = 3205.83
+onsetStrengthLower = 0.5475
+onsetStrengthHigher = 1.1559
+beatStrengthLower = 0
+beatStrengthHigher = 9.7606
+zeroCrossingRateLower = 0
+zeroCrossingRateHigher = 0.1462
+rolloffLower = 12.112
+rolloffHigher = 7516.434
+
+
 
 # set the path where audio is discovered
 filePath = os.path.dirname(__file__)
@@ -22,11 +47,12 @@ randomFile = random.choice(files)
 # combine the file and the path 
 fullAudioPath = os.path.join(audioPath, randomFile)
 y, sr = librosa.load(fullAudioPath)
+y = librosa.util.normalize(y)
 
 
 # beats is required, i think to ensure everything isnt stored in tempo and the data is instead split
 tempo, beats = librosa.beat.beat_track(y=y, sr=sr)
-tempo = float(tempo.mean())
+tempo = clamp(round(tempo.mean(), 0), BPMLower, BPMHigher)
 print('BPM: ' + format(tempo))
 
 
@@ -35,22 +61,22 @@ rmsMin = rms.min()
 rmsMax = rms.max()
 rmsNormalise = (rms - rmsMin) / (rmsMax - rmsMin)    # normalise values so they are useable
 # now have 100s of values per second of music
-rmsMean = float(rmsNormalise.mean()) # overall loudness of track
+rmsMean = clamp(float(rmsNormalise.mean()), rmsLower, rmsHigher) # overall loudness of track
 print ('RMS Mean: ' + format(rmsMean))
 # ideally find rms every x seconds
 
 
 # brightness rating of audio track
 specCentroid = librosa.feature.spectral_centroid(y=y, sr=sr)
-specCentroidMean = float(specCentroid.mean())
+specCentroidMean = clamp(float(specCentroid.mean()), specCentroidLower, specCentroidHigher)
 print ('Spectral Centroid Mean: ' + format(specCentroidMean))
 # potentially find centroid every x/y sec
 
 
 # bass strength at loudest of track (found by restricting to low freq)
 onsetEnv = librosa.onset.onset_strength(y=y, sr=sr, fmax = 1000,  n_mels=32)
-onsetEnvMean = float(onsetEnv.mean()) 
-print ('Onset Strength Mean: ' + format(onsetEnvMean))
+onsetEnvMedian = clamp(float(numpy.median(onsetEnv)), onsetStrengthLower, onsetStrengthHigher)
+print ('Onset Strength Median: ' + format(onsetEnvMedian))
 
 
 # beat strength
@@ -60,20 +86,20 @@ beatStrengths = onsetEnvHigherCap[beats]
 beatStrengthsNormalise = (beatStrengths - numpy.min(beatStrengths)) / (numpy.max(beatStrengths) - numpy.min(beatStrengths))
 # this gives the beat strengths from 0to 1 per onset beat, next normalise it so it can be applied to spline points in ue5
 beatStrengthsList = beatStrengthsNormalise.tolist()
-beatStrengthMean = float(beatStrengths.mean())
-print ('Beat Strength Mean: ' + format(beatStrengthMean))
+beatStrengthMedian = clamp(float(numpy.median(beatStrengths)), beatStrengthLower, beatStrengthHigher)
+print ('Beat Strength Median: ' + format(beatStrengthMedian))
 
 
 # rating of noisiness
 zeroCrossingRate = librosa.feature.zero_crossing_rate(y)
-zeroCrossingRateMean = float(zeroCrossingRate.mean()) 
-print ('Zero Crossing Rate: ' + format(zeroCrossingRateMean))
+zeroCrossingRateMedian = clamp(float(numpy.median(zeroCrossingRate)), zeroCrossingRateLower, zeroCrossingRateHigher)
+print ('Zero Crossing Rate Median: ' + format(zeroCrossingRateMedian))
 
 
 # spectral rolloff = where the audio has most of its energy/power (either high / low frequnecy)
 rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr, roll_percent=0.85)
-rolloffMean = rolloff.mean()
-print ('Rolloff Mean: ' + format(rolloffMean))
+rolloffMedian = clamp(numpy.median(rolloff), rolloffLower, rolloffHigher)
+print ('Rolloff Median: ' + format(rolloffMedian))
 
 
 # FROM https://medium.com/@oluyaled/detecting-musical-key-from-audio-using-chroma-feature-in-python-72850c0ae4b1
@@ -93,10 +119,10 @@ output = [
         "BPM": tempo,
         "RMS Mean": rmsMean,
         "Spectral Centroid Mean": specCentroidMean,
-        "Onset Strength Mean": onsetEnvMean,
-        "Beat Strength Mean": beatStrengthMean,
-        "Zero Crossing Rate Mean": zeroCrossingRateMean,
-        "Rolloff Mean": rolloffMean,
+        "Onset Strength Median": onsetEnvMedian,
+        "Beat Strength Median": beatStrengthMedian,
+        "Zero Crossing Rate Median": zeroCrossingRateMedian,
+        "Rolloff Median": rolloffMedian,
         "Estimated Key": estimatedKey,
         "Beat Strengths Array": beatStrengthsList
         }
