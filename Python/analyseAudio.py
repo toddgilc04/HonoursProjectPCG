@@ -8,7 +8,7 @@ import json
 import numpy
 from pathlib import Path
 
-#clamp created as values have to stay within reasonable bounds
+# clamp created as values have to stay within reasonable bounds
 def clamp(n, min, max):
     if n < min:
         return min
@@ -16,6 +16,24 @@ def clamp(n, min, max):
         return max
     else:
         return n
+    
+# normalise function!    
+def normalise(n, minBound, maxBound):
+    normalised = (n - minBound) / (maxBound - minBound)
+    return normalised  # catch any outlying values
+
+def finalise(n, lower, upper, meanOrMedian, printText):
+
+    if meanOrMedian == "mean":
+        n = clamp(float(n.mean()), lower, upper) # overall loudness of track
+        print (printText + ' Mean: ' + format(n))
+    elif meanOrMedian == "median":
+        n = clamp(float(numpy.median(n)), lower, upper)
+        print (printText + ' Median: ' + format(n))
+   
+    n = normalise(n, lower, upper)
+    print (printText + ' NM: ' + format(n))
+    return n
     
 BPMLower = 37
 BPMHigher = 185
@@ -59,47 +77,40 @@ print('BPM: ' + format(tempo))
 rms = librosa.feature.rms(y=y) # find rms of the audio (used as a loudness measurement)
 rmsMin = rms.min()
 rmsMax = rms.max()
-rmsNormalise = (rms - rmsMin) / (rmsMax - rmsMin)    # normalise values so they are useable
-# now have 100s of values per second of music
-rmsMean = clamp(float(rmsNormalise.mean()), rmsLower, rmsHigher) # overall loudness of track
-print ('RMS Mean: ' + format(rmsMean))
-# ideally find rms every x seconds
+rmsNormalise = (rms - rmsMin) / (rmsMax - rmsMin)    # normalise array values so they are useable
+# next normalise values within the IQR range
+rmsMean = finalise(rmsNormalise, rmsLower, rmsHigher, "mean", "RMS")
 
 
 # brightness rating of audio track
 specCentroid = librosa.feature.spectral_centroid(y=y, sr=sr)
-specCentroidMean = clamp(float(specCentroid.mean()), specCentroidLower, specCentroidHigher)
-print ('Spectral Centroid Mean: ' + format(specCentroidMean))
-# potentially find centroid every x/y sec
+specCentroidMean = finalise(specCentroid, specCentroidLower, specCentroidHigher, "mean", "Spectral Centroid")
 
 
 # bass strength at loudest of track (found by restricting to low freq)
 onsetEnv = librosa.onset.onset_strength(y=y, sr=sr, fmax = 1000,  n_mels=32)
-onsetEnvMedian = clamp(float(numpy.median(onsetEnv)), onsetStrengthLower, onsetStrengthHigher)
-print ('Onset Strength Median: ' + format(onsetEnvMedian))
+onsetEnvMedian = finalise(onsetEnv, onsetStrengthLower, onsetStrengthHigher, "median", "Onset Strength")
 
 
 # beat strength
 onsetEnvHigherCap = librosa.onset.onset_strength(y=y, sr=sr, fmax = 8000,  n_mels=128)
 beats = librosa.util.fix_frames(beats)
 beatStrengths = onsetEnvHigherCap[beats]
-beatStrengthsNormalise = (beatStrengths - numpy.min(beatStrengths)) / (numpy.max(beatStrengths) - numpy.min(beatStrengths))
-# this gives the beat strengths from 0to 1 per onset beat, next normalise it so it can be applied to spline points in ue5
+# normalise the array to 0 to 1
+beatStrengthsNormalise = normalise(beatStrengths, numpy.min(beatStrengths), numpy.max(beatStrengths))
+# this gives the beat strengths from 0 to 1 per onset beat, next normalise it so it can be applied to spline points in ue5
 beatStrengthsList = beatStrengthsNormalise.tolist()
-beatStrengthMedian = clamp(float(numpy.median(beatStrengths)), beatStrengthLower, beatStrengthHigher)
-print ('Beat Strength Median: ' + format(beatStrengthMedian))
+beatStrengthMedian = finalise(beatStrengthsNormalise, beatStrengthLower, beatStrengthHigher, "median", "Beat Strength")
 
 
 # rating of noisiness
 zeroCrossingRate = librosa.feature.zero_crossing_rate(y)
-zeroCrossingRateMedian = clamp(float(numpy.median(zeroCrossingRate)), zeroCrossingRateLower, zeroCrossingRateHigher)
-print ('Zero Crossing Rate Median: ' + format(zeroCrossingRateMedian))
+zeroCrossingRateMedian = finalise(zeroCrossingRate, zeroCrossingRateLower, zeroCrossingRateHigher, "median", "Zero Crossing Rate")
 
 
 # spectral rolloff = where the audio has most of its energy/power (either high / low frequnecy)
 rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr, roll_percent=0.85)
-rolloffMedian = clamp(numpy.median(rolloff), rolloffLower, rolloffHigher)
-print ('Rolloff Median: ' + format(rolloffMedian))
+rolloffMedian = finalise(rolloff, rolloffLower, rolloffHigher, "median", "Spectral Rolloff")
 
 
 # FROM https://medium.com/@oluyaled/detecting-musical-key-from-audio-using-chroma-feature-in-python-72850c0ae4b1
