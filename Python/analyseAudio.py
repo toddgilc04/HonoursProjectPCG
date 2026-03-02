@@ -25,8 +25,9 @@ def normalise(n, minBound, maxBound):
 def finalise(n, lower, upper, meanOrMedian, printText):
 
     if meanOrMedian == "mean":
-        n = clamp(float(n.mean()), lower, upper) # overall loudness of track
+        n = clamp(float(n.mean()), lower, upper) 
         print (printText + ' Mean: ' + format(n))
+
     elif meanOrMedian == "median":
         n = clamp(float(numpy.median(n)), lower, upper)
         print (printText + ' Median: ' + format(n))
@@ -145,5 +146,3 @@ outputPath = os.path.join(filePath, 'audioData.json')
 with open(outputPath, "w") as outFile:
     json.dump(output, outFile, indent = 2)
 
-
-#numpy.set_printoptions(threshold=sys.maxsize)
