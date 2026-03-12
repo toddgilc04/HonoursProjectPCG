@@ -1,0 +1,177 @@
+[
+	{
+		"Name": "0",
+		"Position": 100001,
+		"Scale": 0,
+		"Arrive Tangent": 0,
+		"Leave Tangent": 0
+	},
+	{
+		"Name": "1",
+		"Position": 91901.276240086561,
+		"Scale": 36333.351673775149,
+		"Arrive Tangent": 0,
+		"Leave Tangent": 0
+	},
+	{
+		"Name": "2",
+		"Position": 79978.291524306493,
+		"Scale": 58046.790637036655,
+		"Arrive Tangent": 0,
+		"Leave Tangent": 0
+	},
+	{
+		"Name": "3",
+		"Position": 63029.976612473372,
+		"Scale": 76112.936263410433,
+		"Arrive Tangent": 0,
+		"Leave Tangent": 0
+	},
+	{
+		"Name": "4",
+		"Position": 42121.256462039833,
+		"Scale": 89396.626180555555,
+		"Arrive Tangent": 0,
+		"Leave Tangent": 0
+	},
+	{
+		"Name": "5",
+		"Position": 18565.902856951263,
+		"Scale": 97063.19729698365,
+		"Arrive Tangent": 0,
+		"Leave Tangent": 0
+	},
+	{
+		"Name": "6",
+		"Position": -6156.0147052539714,
+		"Scale": 98630.930753773282,
+		"Arrive Tangent": 0,
+		"Leave Tangent": 0
+	},
+	{
+		"Name": "7",
+		"Position": -30491.127223289717,
+		"Scale": 94001.320092114052,
+		"Arrive Tangent": 0,
+		"Leave Tangent": 0
+	},
+	{
+		"Name": "8",
+		"Position": -52910.370079364438,
+		"Scale": 83465.260776394964,
+		"Arrive Tangent": 0,
+		"Leave Tangent": 0
+	},
+	{
+		"Name": "9",
+		"Position": -72005.05979262339,
+		"Scale": 67684.77216233834,
+		"Arrive Tangent": 0,
+		"Leave Tangent": 0
+	},
+	{
+		"Name": "10",
+		"Position": -86575.406783026076,
+		"Scale": 47651.400386142705,
+		"Arrive Tangent": 0,
+		"Leave Tangent": 0
+	},
+	{
+		"Name": "11",
+		"Position": -95705.902563177689,
+		"Scale": 24623.915874093997,
+		"Arrive Tangent": 0,
+		"Leave Tangent": 0
+	},
+	{
+		"Name": "12",
+		"Position": -98822.844503596716,
+		"Scale": 49.220167248206963,
+		"Arrive Tangent": 0,
+		"Leave Tangent": 0
+	},
+	{
+		"Name": "13",
+		"Position": -95730.383678856073,
+		"Scale": -24528.568223724913,
+		"Arrive Tangent": 0,
+		"Leave Tangent": 0
+	},
+	{
+		"Name": "14",
+		"Position": -86622.830775849521,
+		"Scale": -47565.136463437753,
+		"Arrive Tangent": 0,
+		"Leave Tangent": 0
+	},
+	{
+		"Name": "15",
+		"Position": -72072.446838709555,
+		"Scale": -67613.012246817583,
+		"Arrive Tangent": 0,
+		"Leave Tangent": 0
+	},
+	{
+		"Name": "16",
+		"Position": -52993.486002775498,
+		"Scale": -83412.513807465104,
+		"Arrive Tangent": 0,
+		"Leave Tangent": 0
+	},
+	{
+		"Name": "17",
+		"Position": -30584.749544878774,
+		"Scale": -93970.900355822698,
+		"Arrive Tangent": 0,
+		"Leave Tangent": 0
+	},
+	{
+		"Name": "18",
+		"Position": -6254.2607902368072,
+		"Scale": -98624.749634027583,
+		"Arrive Tangent": 0,
+		"Leave Tangent": 0
+	},
+	{
+		"Name": "19",
+		"Position": 18469.206171417958,
+		"Scale": -97081.643176269834,
+		"Arrive Tangent": 0,
+		"Leave Tangent": 0
+	},
+	{
+		"Name": "20",
+		"Position": 42032.184984333653,
+		"Scale": -89438.540036438862,
+		"Arrive Tangent": 0,
+		"Leave Tangent": 0
+	},
+	{
+		"Name": "21",
+		"Position": 62954.127031120632,
+		"Scale": -76175.684494177331,
+		"Arrive Tangent": 0,
+		"Leave Tangent": 0
+	},
+	{
+		"Name": "22",
+		"Position": 79920.429747458766,
+		"Scale": -58126.430540576199,
+		"Arrive Tangent": 0,
+		"Leave Tangent": 0
+	},
+	{
+		"Name": "23",
+		"Position": 91668.678561067471,
+		"Scale": -37979.206519951185,
+		"Arrive Tangent": 0,
+		"Leave Tangent": 0
+	},
+	{
+		"Name": "24",
+		"Position": 96859.269517098364,
+		"Scale": -24869.237406372613,
+		"Arrive Tangent": 0,
+		"Leave Tangent": 0
+	}
+]

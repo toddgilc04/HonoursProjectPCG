@@ -7,6 +7,7 @@ import os
 import json
 import numpy
 from pathlib import Path
+import soundfile as sf
 
 # clamp created as values have to stay within reasonable bounds
 def clamp(n, min, max):
