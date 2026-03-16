@@ -8,6 +8,8 @@ import json
 import numpy
 from pathlib import Path
 import soundfile as sf
+import time
+
 
 # clamp created as values have to stay within reasonable bounds
 def clamp(n, min, max):
@@ -52,7 +54,7 @@ zeroCrossingRateHigher = 0.1462
 rolloffLower = 12.112
 rolloffHigher = 7516.434
 
-
+t0 = time.time()
 
 # set the path where audio is discovered
 filePath = os.path.dirname(__file__)
@@ -147,3 +149,8 @@ outputPath = os.path.join(filePath, 'audioData.json')
 with open(outputPath, "w") as outFile:
     json.dump(output, outFile, indent = 2)
 
+t1 = time.time()
+
+total = t1-t0
+print(randomFile + ': ')
+print(total)
