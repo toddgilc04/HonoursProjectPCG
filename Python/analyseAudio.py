@@ -71,6 +71,7 @@ fullAudioPath = os.path.join(audioPath, randomFile)
 y, sr = librosa.load(fullAudioPath)
 y = librosa.util.normalize(y)
 
+t1 = time.time()
 
 # beats is required, i think to ensure everything isnt stored in tempo and the data is instead split
 tempo, beats = librosa.beat.beat_track(y=y, sr=sr)
@@ -149,7 +150,7 @@ outputPath = os.path.join(filePath, 'audioData.json')
 with open(outputPath, "w") as outFile:
     json.dump(output, outFile, indent = 2)
 
-t1 = time.time()
+
 
 total = t1-t0
 print(randomFile + ': ')
