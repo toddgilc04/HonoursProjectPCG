@@ -69,6 +69,7 @@ randomFile = random.choice(files)
 # combine the file and the path 
 fullAudioPath = os.path.join(audioPath, randomFile)
 y, sr = librosa.load(fullAudioPath)
+y, sr = sf.read(fullAudioPath)
 y = librosa.util.normalize(y)
 
 t1 = time.time()
