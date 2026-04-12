@@ -1,17 +1,17 @@
 
 print("\nRunning Audio Analysis Script\n")
 
-import sys
-import os
+# get librosa if we dont already have installed
+import sys, subprocess, importlib.util, os
+def ensure(pkg):
+    if importlib.util.find_spec(pkg) is None:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", pkg])
+        print("Installing Librosa")
 
-# get imports from file
-directory = os.path.dirname(os.path.abspath(__file__))
-
-sitePackages = os.path.join(directory, "site-packages")
-if sitePackages not in sys.path:
-    sys.path.append(sitePackages)
-
+ensure("librosa")
 import librosa
+
+# other libraries
 import random
 import json
 import numpy
