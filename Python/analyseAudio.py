@@ -1,9 +1,18 @@
 
 print("\nRunning Audio Analysis Script\n")
 
+import sys
+import os
+
+# get imports from file
+directory = os.path.dirname(os.path.abspath(__file__))
+
+sitePackages = os.path.join(directory, "site-packages")
+if sitePackages not in sys.path:
+    sys.path.append(sitePackages)
+
 import librosa
 import random
-import os
 import json
 import numpy
 from pathlib import Path
