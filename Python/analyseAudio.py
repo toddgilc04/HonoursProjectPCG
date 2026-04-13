@@ -2,22 +2,21 @@
 print("\nRunning Audio Analysis Script\n")
 
 # get librosa if we dont already have installed
-import sys, subprocess, importlib.util, os
-def ensure(pkg):
-    if importlib.util.find_spec(pkg) is None:
-        subprocess.check_call([sys.executable, "-m", "pip", "install", pkg])
-        print("Installing Librosa")
+# import sys, subprocess, importlib.util, os
+# def ensure(pkg):
+#    if importlib.util.find_spec(pkg) is None:
+#        subprocess.check_call([sys.executable, "-m", "pip", "install", pkg])
+#        print("Installing Librosa")
 
-ensure("librosa")
+# ensure("librosa")
 import librosa
 
 # other libraries
 import random
 import json
 import numpy
-from pathlib import Path
-import soundfile as sf
 import time
+import os
 
 
 # clamp created as values have to stay within reasonable bounds
